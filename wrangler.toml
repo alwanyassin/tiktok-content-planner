@@ -9,6 +9,4 @@ database_id = "8a1b075e-2b79-40df-9f4a-53894b85c071"
 migrations_dir = "migrations"
 
 [vars]
-AI_BASE_URL = "https://api.openai.com/v1"
-AI_MODEL_ID = "gpt-4o-mini"
 PROMPT_VERSION = "v1"

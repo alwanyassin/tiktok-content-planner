@@ -1,0 +1,6 @@
+# Salin file ini menjadi .dev.vars untuk pengujian lokal dengan Wrangler:
+# cp .dev.vars.example .dev.vars
+
+AI_API_KEY="sk-..."
+AI_BASE_URL="https://api.openai.com/v1"
+AI_MODEL_ID="gpt-4o-mini"
