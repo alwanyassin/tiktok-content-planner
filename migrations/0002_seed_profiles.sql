@@ -1,0 +1,73 @@
+-- Migration 0002: Seed 4 Account Profiles
+INSERT OR IGNORE INTO account_profiles (
+  id, slug, display_name, handle, niche, audience, language, tone,
+  content_pillars_json, avoid_list_json, preferred_formats_json, cta_style, active, created_at, updated_at
+) VALUES 
+(
+  'profile_beauty_01',
+  'beauty-personal-care',
+  'Beauty & Personal Care',
+  '@glowandcare.id',
+  'Skincare & Makeup Education',
+  'Remaja & wanita 18-35 tahun yang mencari solusi perawatan kulit, edukasi kandungan skincare, dan tutorial makeup praktis.',
+  'id-ID',
+  'Edukatif, ramah, jujur, solutif, mudah dipahami tanpa klaim berlebihan',
+  '["Edukasi Kandungan Skincare", "Rekomendasi Produk & Review Jujur", "Tutorial Rutinitas Skincare Pagi/Malam", "Tips Makeup Flawless Tahan Lama", "Mitos vs Fakta Perawatan Kulit"]',
+  '["Klaim instan putih 3 hari", "Menjelek-jelekkan brand lain tanpa dasar", "Mendiagnosis penyakit kulit klinis", "Klaim medis tidak berdasar"]',
+  '["carousel", "short_video_outline"]',
+  'Simpan konten ini untuk panduan skincare routine kamu, share ke teman yang butuh, cek produk di keranjang kuning!',
+  1,
+  '2026-10-09T00:00:00Z',
+  '2026-10-09T00:00:00Z'
+),
+(
+  'profile_fashion_wanita_02',
+  'fashion-wanita',
+  'Fashion Wanita',
+  '@ootdcewek.id',
+  'Jeans, Tops, Corsets & Women''s Everyday Style',
+  'Wanita 18-30 tahun yang ingin tampil modis, percaya diri, dan butuh panduan mix & match outfit kasual maupun formal.',
+  'id-ID',
+  'Trendy, bersemangat, stylish, suportif, relatable',
+  '["Inspirasi OOTD Mix & Match", "Panduan Ukuran & Body Shape Styling", "Tips Memilih Jeans yang Pas di Pinggul", "Kombinasi Atasan & Corset Kekinian", "Ide Outfit Kuliah & Hangout Hemat"]',
+  '["Body shaming", "Klaim ukuran yang menghakimi", "Merekam tanpa izin", "Gaya pakaian tidak sopan"]',
+  '["carousel", "short_video_outline"]',
+  'Tap save buat inspirasi outfit weekend kamu, tag bestie kamu, klik keranjang kuning buat detail ukurannya!',
+  1,
+  '2026-10-09T00:00:00Z',
+  '2026-10-09T00:00:00Z'
+),
+(
+  'profile_techno_03',
+  'techno',
+  'Techno Gadget Hub',
+  '@technohub.id',
+  'Gadgets, Phones, Smartwatches & Accessories',
+  'Tech enthusiast, mahasiswa, dan profesional muda yang mencari panduan belanja gadget, perbandingan spek objektif, dan tips pemakaian.',
+  'id-ID',
+  'Objektif, informatif, tajam, ringkas, mudah dipahami bagi awam teknologi',
+  '["Panduan Beli Gadget Budget vs Flagship", "Komparasi Spek Smartphone & Smartwatch", "Fitur Tersembunyi & Trik Produktivitas", "Review Aksesoris & Case Tahan Banting", "Tips Awet Baterai & Perawatan Device"]',
+  '["Menyebut angka benchmark fiktif", "Klaim performa tanpa uji", "Fanboying bias merek", "Menyebarkan rumor palsu"]',
+  '["carousel", "short_video_outline"]',
+  'Komentar di bawah gadget impianmu, save untuk perbandingan sebelum checkout di keranjang kuning!',
+  1,
+  '2026-10-09T00:00:00Z',
+  '2026-10-09T00:00:00Z'
+),
+(
+  'profile_fashion_pria_04',
+  'fashion-pria',
+  'Fashion Pria',
+  '@gentlemensoutfit.id',
+  'Formal Wear, Tees, Jeans & Smart-Casual Men''s Style',
+  'Pria 18-35 tahun yang ingin upgrade penampilan, butuh inspirasi smart-casual, kemeja rapi, denim, dan grooming dasar.',
+  'id-ID',
+  'Maskulin, rapi, percaya diri, lugas, praktis',
+  '["Kombinasi Outfit Smart-Casual Kantor & Kencan", "Panduan Fit & Potongan Celana Jeans Pria", "Kombinasi Warna Kaos & Outerwear", "Tips Memilih Kemeja Formal & Ukuran Kerah", "Aksesoris Simpel Penunjang Penampilan Pria"]',
+  '["Komentar merendahkan penampilan orang lain", "Klaim harga barang branded palsu", "Gaya tidak realistis untuk cuaca tropis"]',
+  '["carousel", "short_video_outline"]',
+  'Simpan postingan ini untuk contekan outfit besok, share ke kawan, cek etalase keranjang kuning buat rekomendasi kemejanya!',
+  1,
+  '2026-10-09T00:00:00Z',
+  '2026-10-09T00:00:00Z'
+);

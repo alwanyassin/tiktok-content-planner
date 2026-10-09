@@ -1,0 +1,31 @@
+{
+  "name": "tiktok-content-planner",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "d1:migrate:local": "wrangler d1 migrations apply DB --local",
+    "d1:migrate:prod": "wrangler d1 migrations apply DB --remote",
+    "pages:dev": "wrangler pages dev dist --d1 DB=tiktok-content-planner-db"
+  },
+  "dependencies": {
+    "lucide-react": "^1.16.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241022.0",
+    "@types/node": "^22.10.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8",
+    "wrangler": "^3.99.0"
+  }
+}
