@@ -179,9 +179,11 @@ export const DraftEditor: React.FC<DraftEditorProps> = ({
 
   // Copy full package formatted for TikTok
   const handleCopyFullPackage = () => {
-    const formattedSlides = slides.map(s => 
-      `[SLIDE ${s.position}]\n${s.text}\nVisual: ${s.visual_direction}${s.image_prompt ? `\nPrompt AI Image (9:16): ${s.image_prompt}` : ''}`
-    ).join('\n\n');
+    const formattedSlides = slides.map(s => {
+      const cleanText = s.text.replace(/^Slide \d+:\s*/i, '');
+      const imgPrompt = s.image_prompt || `Vertical 9:16 composition. Visual & Background: ${s.visual_direction}. Text on slide: "${cleanText}" --ar 9:16`;
+      return `[SLIDE ${s.position}]\n${s.text}\nVisual & Background: ${s.visual_direction}\nPrompt AI Image (9:16): ${imgPrompt}`;
+    }).join('\n\n');
     const tagsString = hashtags.map(h => `#${h}`).join(' ');
 
     const packageText = `📌 JUDUL: ${title}
@@ -210,9 +212,21 @@ ${sourceNotes.join('\n')}`;
   };
 
   const handleCopyAllImagePrompts = () => {
-    const allPrompts = slides.map(s => `[Slide ${s.position} - Prompt AI Image 9:16]\n${s.image_prompt || s.visual_direction}`).join('\n\n');
+    const allPrompts = slides.map(s => {
+      const cleanText = s.text.replace(/^Slide \d+:\s*/i, '');
+      const promptContent = s.image_prompt || `Vertical 9:16 composition. Visual & Background: ${s.visual_direction}. Text on slide: "${cleanText}" --ar 9:16`;
+      return `[Slide ${s.position} - Prompt AI Image 9:16]\n${promptContent}`;
+    }).join('\n\n');
     navigator.clipboard.writeText(allPrompts);
-    onShowToast('success', 'Semua prompt gambar untuk Midjourney/Flux disalin!');
+    onShowToast('success', 'Semua prompt gambar (teks + visual 9:16) disalin!');
+  };
+
+  const handleSyncImagePrompt = (idx: number) => {
+    const s = slides[idx];
+    const cleanText = s.text.replace(/^Slide \d+:\s*/i, '');
+    const newPrompt = `Vertical 9:16 composition. Visual & Background: ${s.visual_direction}. Text on slide: "${cleanText}". Soft clean studio lighting, minimalist editorial layout, highly detailed 8k --ar 9:16`;
+    handleUpdateSlide(idx, { image_prompt: newPrompt });
+    onShowToast('info', `Prompt gambar Slide ${s.position} disinkronkan dengan teks & visual terbaru!`);
   };
 
   const handleCopyCaptionOnly = () => {
@@ -446,15 +460,26 @@ ${sourceNotes.join('\n')}`;
                               9:16
                             </span>
                           </label>
-                          <button
-                            type="button"
-                            className="btn btn-ghost btn-sm"
-                            style={{ fontSize: '0.7rem', padding: '0.1rem 0.45rem', color: '#e9d5ff', border: '1px solid rgba(168, 85, 247, 0.3)' }}
-                            onClick={() => handleCopyImagePrompt(slide.image_prompt || '', slide.position)}
-                            title="Salin Prompt Gambar Slide Ini"
-                          >
-                            <Copy size={11} /> Salin Prompt
-                          </button>
+                          <div style={{ display: 'flex', gap: '0.35rem' }}>
+                            <button
+                              type="button"
+                              className="btn btn-ghost btn-sm"
+                              style={{ fontSize: '0.7rem', padding: '0.1rem 0.45rem', color: '#cbd5e1' }}
+                              onClick={() => handleSyncImagePrompt(idx)}
+                              title="Sinkronkan prompt dengan teks & arahan visual saat ini"
+                            >
+                              <RefreshCw size={11} /> Sinkronkan
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-ghost btn-sm"
+                              style={{ fontSize: '0.7rem', padding: '0.1rem 0.45rem', color: '#e9d5ff', border: '1px solid rgba(168, 85, 247, 0.3)' }}
+                              onClick={() => handleCopyImagePrompt(slide.image_prompt || '', slide.position)}
+                              title="Salin Prompt Gambar Slide Ini"
+                            >
+                              <Copy size={11} /> Salin Prompt
+                            </button>
+                          </div>
                         </div>
                         <textarea
                           className="form-textarea"

@@ -41,9 +41,27 @@ export function validateAndSanitizeOutput(
   const sanitizedSlides = slides.map((s: any, idx: number) => {
     const text = typeof s.text === 'string' ? s.text.trim() : `Slide ${idx + 1}`;
     const visual = typeof s.visual_direction === 'string' ? s.visual_direction.trim() : 'Visual relevan dengan teks';
-    const imagePrompt = typeof s.image_prompt === 'string' && s.image_prompt.trim()
+    const cleanText = text.replace(/^Slide \d+:\s*/i, '');
+
+    let imagePrompt = typeof s.image_prompt === 'string' && s.image_prompt.trim()
       ? s.image_prompt.trim()
-      : `Photorealistic vertical 9:16 composition of ${visual || text}, soft clean studio lighting, minimalist modern aesthetic, highly detailed 8k --ar 9:16`;
+      : '';
+
+    if (!imagePrompt) {
+      imagePrompt = `Vertical 9:16 composition. Visual & Background: ${visual}. On-screen text typography: "${cleanText}". Soft clean studio lighting, minimalist editorial layout, highly detailed 8k --ar 9:16`;
+    } else {
+      const textSnippet = cleanText.slice(0, 20).toLowerCase();
+      if (!imagePrompt.toLowerCase().includes(textSnippet)) {
+        if (imagePrompt.includes('--ar')) {
+          imagePrompt = imagePrompt.replace(/(--ar\s+[\d:]+)/i, `Text on slide: "${cleanText}" $1`);
+        } else {
+          imagePrompt = `${imagePrompt}. Text on slide: "${cleanText}" --ar 9:16`;
+        }
+      }
+      if (!imagePrompt.toLowerCase().includes(visual.slice(0, 15).toLowerCase()) && !imagePrompt.toLowerCase().includes('visual')) {
+        imagePrompt = `Visual & Background: ${visual}. ${imagePrompt}`;
+      }
+    }
 
     return {
       position: typeof s.position === 'number' ? s.position : idx + 1,
@@ -376,7 +394,7 @@ Output MUST be strict JSON matching this schema:
   "title": "string",
   "format": "${request.format}",
   "hook": "string",
-  "slides": [{"position": 1, "text": "string", "visual_direction": "string", "image_prompt": "string (Detailed English prompt for Midjourney/Flux/DALL-E in 9:16 vertical aspect ratio)"}],
+  "slides": [{"position": 1, "text": "string", "visual_direction": "string", "image_prompt": "string (Detailed English prompt for Midjourney/Flux/Ideogram in vertical 9:16 aspect ratio combining visual scene & background from visual_direction and on-screen text from text: 'Visual & Background: ... Text on screen: \"...\" --ar 9:16')"}],
   "caption": "string",
   "hashtags": ["string"],
   "source_notes": ["string"],

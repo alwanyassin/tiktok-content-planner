@@ -152,9 +152,11 @@ describe('TikTok Content Planner — Core Logic & Validation Tests', () => {
     const result = validateAndSanitizeOutput(rawAiOutput, request, dummyProfile);
     expect(result.valid).toBe(true);
     expect(result.output?.slides[0].image_prompt).toContain('Full body 9:16');
-    // Fallback generator should supply 9:16 prompt for slide 2 where it was omitted
+    // Fallback generator should supply 9:16 prompt for slide 2 where it was omitted, including visual & text
     expect(result.output?.slides[1].image_prompt).toBeDefined();
     expect(result.output?.slides[1].image_prompt).toContain('9:16');
+    expect(result.output?.slides[1].image_prompt).toContain('Flatlay sweater rajut lembut');
+    expect(result.output?.slides[1].image_prompt).toContain('Atasan knit sweater');
   });
 });
 
