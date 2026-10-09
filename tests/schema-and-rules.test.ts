@@ -120,4 +120,41 @@ describe('TikTok Content Planner — Core Logic & Validation Tests', () => {
     expect(draft.hashtags.length).toBeGreaterThan(0);
     expect(draft.checklist.length).toBeGreaterThan(0);
   });
+
+  it('generates and sanitizes vertical 9:16 image generation prompts for slides', () => {
+    const rawAiOutput = {
+      title: 'Fashion OOTD',
+      format: 'carousel',
+      hook: 'Inspirasi outfit weekend!',
+      slides: [
+        {
+          position: 1,
+          text: 'Slide 1: Kombinasi jeans high waist',
+          visual_direction: 'Model OOTD kasual aesthetic',
+          image_prompt: 'Full body 9:16 vertical fashion photography of Asian woman in casual high-waist jeans, bright minimalist street style, soft daylight --ar 9:16'
+        },
+        {
+          position: 2,
+          text: 'Slide 2: Atasan knit sweater',
+          visual_direction: 'Flatlay sweater rajut lembut'
+        }
+      ],
+      caption: 'Save buat referensi besok!',
+      hashtags: ['ootd', 'fashion'],
+    };
+
+    const request: DraftGenerationRequest = {
+      profileId: dummyProfile.id,
+      targetDate: '2026-10-10',
+      format: 'carousel',
+    };
+
+    const result = validateAndSanitizeOutput(rawAiOutput, request, dummyProfile);
+    expect(result.valid).toBe(true);
+    expect(result.output?.slides[0].image_prompt).toContain('Full body 9:16');
+    // Fallback generator should supply 9:16 prompt for slide 2 where it was omitted
+    expect(result.output?.slides[1].image_prompt).toBeDefined();
+    expect(result.output?.slides[1].image_prompt).toContain('9:16');
+  });
 });
+

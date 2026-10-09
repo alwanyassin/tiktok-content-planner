@@ -30,6 +30,7 @@ export interface SlideItem {
   position: number;
   text: string;
   visual_direction: string;
+  image_prompt?: string; // Prompt for AI image generation (Midjourney/Flux/DALL-E) in 9:16
 }
 
 export interface ContentDraftOutput {

@@ -38,11 +38,20 @@ export function validateAndSanitizeOutput(
     errors.push('At least one slide or beat is required');
   }
 
-  const sanitizedSlides = slides.map((s: any, idx: number) => ({
-    position: typeof s.position === 'number' ? s.position : idx + 1,
-    text: typeof s.text === 'string' ? s.text.trim() : `Slide ${idx + 1}`,
-    visual_direction: typeof s.visual_direction === 'string' ? s.visual_direction.trim() : 'Visual relevan dengan teks',
-  }));
+  const sanitizedSlides = slides.map((s: any, idx: number) => {
+    const text = typeof s.text === 'string' ? s.text.trim() : `Slide ${idx + 1}`;
+    const visual = typeof s.visual_direction === 'string' ? s.visual_direction.trim() : 'Visual relevan dengan teks';
+    const imagePrompt = typeof s.image_prompt === 'string' && s.image_prompt.trim()
+      ? s.image_prompt.trim()
+      : `Photorealistic vertical 9:16 composition of ${visual || text}, soft clean studio lighting, minimalist modern aesthetic, highly detailed 8k --ar 9:16`;
+
+    return {
+      position: typeof s.position === 'number' ? s.position : idx + 1,
+      text,
+      visual_direction: visual,
+      image_prompt: imagePrompt,
+    };
+  });
 
   const caption = typeof raw.caption === 'string' ? raw.caption.trim() : '';
   if (!caption) {
@@ -367,7 +376,7 @@ Output MUST be strict JSON matching this schema:
   "title": "string",
   "format": "${request.format}",
   "hook": "string",
-  "slides": [{"position": 1, "text": "string", "visual_direction": "string"}],
+  "slides": [{"position": 1, "text": "string", "visual_direction": "string", "image_prompt": "string (Detailed English prompt for Midjourney/Flux/DALL-E in 9:16 vertical aspect ratio)"}],
   "caption": "string",
   "hashtags": ["string"],
   "source_notes": ["string"],

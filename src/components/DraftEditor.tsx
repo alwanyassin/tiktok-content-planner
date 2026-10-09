@@ -63,6 +63,7 @@ export const DraftEditor: React.FC<DraftEditorProps> = ({
       position: newPos,
       text: `Slide ${newPos}: [Tulis poin baru di sini]`,
       visual_direction: 'Visual estetik mendukung poin di atas',
+      image_prompt: 'Aesthetic vertical 9:16 commercial photograph, modern minimalist studio lighting, high resolution --ar 9:16',
     };
     setSlides([...slides, newSlide]);
   };
@@ -178,7 +179,9 @@ export const DraftEditor: React.FC<DraftEditorProps> = ({
 
   // Copy full package formatted for TikTok
   const handleCopyFullPackage = () => {
-    const formattedSlides = slides.map(s => `[SLIDE ${s.position}]\n${s.text}\nVisual: ${s.visual_direction}`).join('\n\n');
+    const formattedSlides = slides.map(s => 
+      `[SLIDE ${s.position}]\n${s.text}\nVisual: ${s.visual_direction}${s.image_prompt ? `\nPrompt AI Image (9:16): ${s.image_prompt}` : ''}`
+    ).join('\n\n');
     const tagsString = hashtags.map(h => `#${h}`).join(' ');
 
     const packageText = `📌 JUDUL: ${title}
@@ -198,7 +201,18 @@ ${disclosureReminder ? `⚠️ DISCLOSURE: ${disclosureReminder}\n` : ''}
 ${sourceNotes.join('\n')}`;
 
     navigator.clipboard.writeText(packageText);
-    onShowToast('success', 'Paket konten lengkap berhasil disalin ke clipboard!');
+    onShowToast('success', 'Paket konten lengkap (termasuk prompt gambar) disalin!');
+  };
+
+  const handleCopyImagePrompt = (promptText: string, slideNumber: number) => {
+    navigator.clipboard.writeText(promptText);
+    onShowToast('success', `Prompt gambar Slide ${slideNumber} disalin!`);
+  };
+
+  const handleCopyAllImagePrompts = () => {
+    const allPrompts = slides.map(s => `[Slide ${s.position} - Prompt AI Image 9:16]\n${s.image_prompt || s.visual_direction}`).join('\n\n');
+    navigator.clipboard.writeText(allPrompts);
+    onShowToast('success', 'Semua prompt gambar untuk Midjourney/Flux disalin!');
   };
 
   const handleCopyCaptionOnly = () => {
@@ -412,7 +426,7 @@ ${sourceNotes.join('\n')}`;
                         />
                       </div>
 
-                      <div className="form-group" style={{ marginBottom: 0 }}>
+                      <div className="form-group" style={{ marginBottom: '0.65rem' }}>
                         <label className="form-label" style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Arahan Visual & Background</label>
                         <input
                           type="text"
@@ -420,6 +434,34 @@ ${sourceNotes.join('\n')}`;
                           style={{ fontSize: '0.8rem', color: '#cbd5e1' }}
                           value={slide.visual_direction}
                           onChange={(e) => handleUpdateSlide(idx, { visual_direction: e.target.value })}
+                        />
+                      </div>
+
+                      {/* AI Image Generation Prompt */}
+                      <div className="form-group" style={{ marginBottom: 0, background: 'rgba(168, 85, 247, 0.06)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: 'var(--radius-sm)', padding: '0.6rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                          <label className="form-label" style={{ fontSize: '0.75rem', color: '#c084fc', display: 'flex', alignItems: 'center', gap: '0.35rem', margin: 0, fontWeight: 700 }}>
+                            <Sparkles size={12} /> Prompt AI Image (Midjourney / Flux / DALL-E)
+                            <span style={{ fontSize: '0.68rem', background: 'rgba(168, 85, 247, 0.2)', padding: '0.1rem 0.4rem', borderRadius: '4px', color: '#e9d5ff' }}>
+                              9:16
+                            </span>
+                          </label>
+                          <button
+                            type="button"
+                            className="btn btn-ghost btn-sm"
+                            style={{ fontSize: '0.7rem', padding: '0.1rem 0.45rem', color: '#e9d5ff', border: '1px solid rgba(168, 85, 247, 0.3)' }}
+                            onClick={() => handleCopyImagePrompt(slide.image_prompt || '', slide.position)}
+                            title="Salin Prompt Gambar Slide Ini"
+                          >
+                            <Copy size={11} /> Salin Prompt
+                          </button>
+                        </div>
+                        <textarea
+                          className="form-textarea"
+                          style={{ minHeight: '50px', fontSize: '0.78rem', color: '#f3e8ff', background: 'rgba(15, 23, 42, 0.6)', borderColor: 'rgba(168, 85, 247, 0.3)' }}
+                          value={slide.image_prompt || ''}
+                          placeholder="Prompt gambar Midjourney/Flux dalam bahasa Inggris..."
+                          onChange={(e) => handleUpdateSlide(idx, { image_prompt: e.target.value })}
                         />
                       </div>
                     </div>
@@ -640,6 +682,15 @@ ${sourceNotes.join('\n')}`;
               title="Salin Hook, Slide, Caption, dan Hashtag sekaligus"
             >
               <Copy size={14} /> Salin Paket Lengkap
+            </button>
+
+            <button
+              className="btn btn-secondary btn-sm"
+              style={{ color: '#c084fc', borderColor: 'rgba(168, 85, 247, 0.4)' }}
+              onClick={handleCopyAllImagePrompts}
+              title="Salin semua prompt AI Image Generator (Midjourney / Flux / DALL-E) untuk seluruh slide"
+            >
+              <Sparkles size={13} /> Salin Semua Image Prompt
             </button>
           </div>
 
